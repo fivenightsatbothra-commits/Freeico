@@ -1,11 +1,38 @@
 // The `collectionsList` variable is now globally available from collections-list.js 
 const collections = collectionsList;
+const knownAuthors = {
+    'ion': 'Ionic Framework',
+    'heroicons': 'Tailwind Labs',
+    'heroicons-solid': 'Tailwind Labs',
+    'heroicons-outline': 'Tailwind Labs',
+    'akar-icons': 'Artavazd',
+    'ant-design': 'Alibaba',
+    'bootstrap': 'Twitter / Bootstrap',
+    'boxicons': 'Atisa',
+    'entypo': 'Daniel Bruce',
+    'entypo-social': 'Daniel Bruce',
+    'eva': 'Akveo',
+    'feather': 'Cole Bemis',
+    'lucide': 'Lucide Contributors',
+    'material-design': 'Google',
+    'mdi': 'Material Design Icons',
+    'phosphor': 'Helena Zhang & Tobias Fried',
+    'tabler': 'Paweł Kuna',
+    'radix': 'Modulz',
+    'zondicons': 'Steve Schoger',
+    'fluent': 'Microsoft',
+    'fluent-mdl2': 'Microsoft'
+};
+
 collections.forEach(c => {
-    // Format raw directory identifiers into display names
     c.name = c.id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-    // Strip trailing 'icons' from author name to prevent 'By Akar Icons in Akar Icons'
-    let auth = c.id.toLowerCase().replace(/-icons?$/, '') || c.id;
-    c.author = auth.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    
+    if (knownAuthors[c.id]) {
+        c.author = knownAuthors[c.id];
+    } else {
+        let auth = c.id.toLowerCase().replace(/-icons?$/, '') || c.id;
+        c.author = "The " + auth.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + " Team";
+    }
 });
 
 // DOM Elements
@@ -24,6 +51,7 @@ let currentObserver = null;
 let pinnedCollections = JSON.parse(localStorage.getItem('freeico_pins') || '[]');
 let savedBookmarks = JSON.parse(localStorage.getItem('freeico_bookmarks') || '[]');
 let searchIndexData = null;
+let activeCollection = null;
 
 // Initialize
 function init() {
@@ -39,7 +67,11 @@ function init() {
     navHome.addEventListener('click', (e) => {
         e.preventDefault();
         setActiveNav(navHome);
-        if (mainSearch) mainSearch.value = '';
+        activeCollection = null;
+        if (mainSearch) {
+            mainSearch.value = '';
+            mainSearch.placeholder = "Search all icons...";
+        }
         renderHomeView();
         popoverContainer.innerHTML = '';
         selectedIcon = null;
@@ -49,6 +81,11 @@ function init() {
         navBookmarks.addEventListener('click', (e) => {
             e.preventDefault();
             setActiveNav(navBookmarks);
+            activeCollection = null;
+            if (mainSearch) {
+                mainSearch.value = '';
+                mainSearch.placeholder = "Search bookmarks is coming soon...";
+            }
             renderBookmarksView();
             popoverContainer.innerHTML = '';
         });
@@ -80,7 +117,12 @@ function init() {
             searchDebounceTimeout = setTimeout(() => {
                 const query = e.target.value.toLowerCase();
                 if (query.trim() === '') {
-                    renderHomeView();
+                    if (activeCollection) {
+                        const col = collections.find(c => c.id === activeCollection);
+                        renderCollectionView(col);
+                    } else {
+                        renderHomeView();
+                    }
                     return;
                 }
                 if (searchIndexData) {
@@ -209,11 +251,16 @@ function renderHomeView() {
 }
 
 function renderCollectionView(collection) {
+    activeCollection = collection.id;
+    if (mainSearch) {
+        mainSearch.placeholder = `Search in ${collection.name}...`;
+    }
+
     // Update Header
     topSection.innerHTML = `
         <div class="collection-view-header">
             <h1>${collection.name}</h1>
-            <p>Discover ${collection.count.toLocaleString()} high-quality icons in the ${collection.name} collection, crafted by ${collection.author}. Licensed under Apache 2.0, perfect for web, app, and design projects.</p>
+            <p>Discover ${collection.count.toLocaleString()} high-quality icons in the ${collection.name} collection. Licensed under Apache 2.0, perfect for web, app, and design projects.</p>
             <div class="action-buttons-alt">
                 <button class="btn btn-primary" id="btn-pin-collection">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
@@ -420,7 +467,7 @@ function showPopover(icon) {
                 <div class="popover-header">
                     <div class="popover-title-area">
                         <h3>${icon.name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h3>
-                        <p>${icon.author === icon.collection ? `From <a href="#">${icon.collection}</a>` : `By ${icon.author} in <a href="#">${icon.collection}</a>`}</p>
+                        <p>From <a href="#">${icon.collection}</a></p>
                     </div>
                     <div class="popover-actions-top">
                         <button title="Open in new tab">
@@ -718,12 +765,17 @@ function renderBookmarksView() {
 }
 
 async function renderSearchResults(query) {
-    let matches = searchIndexData.filter(item => item.n.includes(query) || item.c.includes(query));
-    
-    // If there are too many matches, sample 300 evenly across all A-Z collections
-    if (matches.length > 300) {
-        const step = matches.length / 300;
-        matches = Array.from({length: 300}, (_, i) => matches[Math.floor(i * step)]);
+    let matches;
+    if (activeCollection) {
+        matches = searchIndexData.filter(item => item.c === activeCollection && item.n.includes(query));
+    } else {
+        matches = searchIndexData.filter(item => item.n.includes(query) || item.c.includes(query));
+        
+        // If there are too many matches, sample 300 evenly across all A-Z collections
+        if (matches.length > 300) {
+            const step = matches.length / 300;
+            matches = Array.from({length: 300}, (_, i) => matches[Math.floor(i * step)]);
+        }
     }
     
     if (matches.length === 0) {
@@ -788,7 +840,7 @@ async function renderSearchResults(query) {
     
     topSection.innerHTML = `
         <div class="collection-view-header">
-            <h1>Search Results</h1>
+            <h1>Search Results ${activeCollection ? `in ${collections.find(c=>c.id===activeCollection)?.name}` : ''}</h1>
             <p>Found matches for "${query}"</p>
         </div>
     `;
