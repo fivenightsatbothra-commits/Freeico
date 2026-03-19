@@ -11,6 +11,8 @@ if (!fs.existsSync(destDir)) {
 const dirs = fs.readdirSync(dataPath).filter(f => fs.statSync(path.join(dataPath, f)).isDirectory());
 const colorPool = ['var(--col-peach)', 'var(--col-blue)', 'var(--col-green)', 'var(--col-peach-alt)', 'var(--col-yellow)', 'var(--col-purple)', 'var(--col-mint)'];
 
+const searchIndex = [];
+
 const collectionsList = dirs.map(d => {
     const p = path.join(dataPath, d);
     const files = fs.readdirSync(p).filter(f => f.endsWith('.svg'));
@@ -34,8 +36,11 @@ const collectionsList = dirs.map(d => {
             content = fs.readFileSync(path.join(p, f), 'utf-8');
         } catch(e) {}
         
+        const cleanName = f.replace('.svg', '');
+        searchIndex.push({ n: cleanName, c: d });
+        
         return {
-            name: f.replace('.svg', ''),
+            name: cleanName,
             content: content
         };
     });
@@ -59,6 +64,9 @@ if (typeof window.onCollectionLoaded === "function") window.onCollectionLoaded("
     };
 });
 
+// Write search index
+fs.writeFileSync(path.join(destDir, 'search-index.js'), 'window.searchIndex = ' + JSON.stringify(searchIndex) + ';');
+
 // Write the main list of all collections
 fs.writeFileSync('collections-list.js', 'const collectionsList = ' + JSON.stringify(collectionsList) + ';');
-console.log('Build complete. Generated individual collection files inside Site/data/');
+console.log('Build complete. Generated individual collection files inside Site/data/ and search-index.js');
