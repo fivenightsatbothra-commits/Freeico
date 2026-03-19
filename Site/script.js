@@ -419,7 +419,7 @@ function showPopover(icon) {
             <div class="popover-details">
                 <div class="popover-header">
                     <div class="popover-title-area">
-                        <h3>${icon.name}</h3>
+                        <h3>${icon.name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h3>
                         <p>${icon.author === icon.collection ? `From <a href="#">${icon.collection}</a>` : `By ${icon.author} in <a href="#">${icon.collection}</a>`}</p>
                     </div>
                     <div class="popover-actions-top">
