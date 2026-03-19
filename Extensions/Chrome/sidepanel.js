@@ -97,6 +97,48 @@ function handleSearch() {
     }, 250);
 }
 
+// Function to copy SVG as PNG
+async function copyAsPng(svgElement) {
+    const clone = svgElement.cloneNode(true);
+    clone.setAttribute('width', '512');
+    clone.setAttribute('height', '512');
+    clone.style.color = 'black'; // Default color for exported icons
+    
+    const svgData = new XMLSerializer().serializeToString(clone);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    canvas.width = 512;
+    canvas.height = 512;
+    
+    return new Promise((resolve, reject) => {
+        img.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(async blob => {
+                if (blob) {
+                    try {
+                        const item = new ClipboardItem({ 'image/png': blob });
+                        await navigator.clipboard.write([item]);
+                        resolve();
+                    } catch (err) {
+                        console.error('Clipboard write failed:', err);
+                        // Fallback to text if image copy fails for some reason
+                        const svgText = svgElement.outerHTML;
+                        await navigator.clipboard.writeText(svgText);
+                        resolve();
+                    }
+                } else {
+                    reject(new Error('Blob generation failed'));
+                }
+            }, 'image/png');
+        };
+        img.onerror = (e) => reject(new Error('Image load failed'));
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData);
+    });
+}
+
 async function executeSearch(query, selectedCol) {
     let matches = [];
     
@@ -159,12 +201,22 @@ async function executeSearch(query, selectedCol) {
 
     // 4. Attach Copy events
     document.querySelectorAll('.icon-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const svgStr = item.querySelector('svg').outerHTML;
-            navigator.clipboard.writeText(svgStr).then(() => {
+        item.addEventListener('click', async () => {
+            const svg = item.querySelector('svg');
+            item.style.transform = 'scale(0.95)';
+            setTimeout(() => item.style.transform = '', 100);
+
+            try {
+                await copyAsPng(svg);
+                toast.textContent = 'PNG Copied!';
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 2000);
-            });
+            } catch (err) {
+                console.error(err);
+                toast.textContent = 'Failed to copy PNG';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            }
         });
     });
 }
