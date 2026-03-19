@@ -21,20 +21,57 @@ function initSelect() {
     });
 }
 
+// Function to load and parse .js data files that use window.variable = [...]
+async function loadDataFile(path, variableName) {
+    try {
+        const response = await fetch(path);
+        let text = await response.text();
+        
+        // Extract the JSON part after "window.XXXX = "
+        // This handles window.searchIndex = [...] and window.collectionData['col'] = [...]
+        const regex = new RegExp(`window\\.${variableName.replace(/\[.*\]/, '')}(?:\\[['"].*?['"]\\])?\\s*=\\s*([\\s\\S]*);?`);
+        const match = text.match(regex);
+        
+        if (match && match[1]) {
+            let jsonStr = match[1].trim();
+            if (jsonStr.endsWith(';')) jsonStr = jsonStr.slice(0, -1);
+            return JSON.parse(jsonStr);
+        }
+        
+        // Fallback for searchIndex which might not have quotes in the variableName check
+        if (variableName === 'searchIndex') {
+             const fallbackMatch = text.match(/window\.searchIndex\s*=\s*([\s\S]*);?/);
+             if (fallbackMatch && fallbackMatch[1]) {
+                 let jsonStr = fallbackMatch[1].trim();
+                 if (jsonStr.endsWith(';')) jsonStr = jsonStr.slice(0, -1);
+                 return JSON.parse(jsonStr);
+             }
+        }
+
+        return null;
+    } catch (e) {
+        console.error(`Error loading data file ${path}:`, e);
+        return null;
+    }
+}
+
 // Load Search Index
-function loadIndex(callback) {
+async function loadIndex(callback) {
     if (searchIndexData) {
         callback();
         return;
     }
-    const script = document.createElement('script');
-    script.src = 'data/search-index.js';
-    script.onload = () => {
-        searchIndexData = window.searchIndex;
+    
+    loadingState.textContent = 'Loading index (this might take a second)...';
+    
+    const data = await loadDataFile('data/search-index.js', 'searchIndex');
+    if (data) {
+        searchIndexData = data;
         loadingState.style.display = 'none';
         callback();
-    };
-    document.body.appendChild(script);
+    } else {
+        loadingState.textContent = 'Failed to load icon index.';
+    }
 }
 
 // Search Logic
@@ -76,11 +113,14 @@ async function executeSearch(query, selectedCol) {
     }
 
     if (matches.length === 0) {
+        loadingState.style.display = 'block';
         loadingState.textContent = 'No icons found.';
         return;
     }
 
     // 2. Fetch required collections
+    if (!window.collectionData) window.collectionData = {};
+    
     const grouped = {};
     matches.forEach(m => {
         if (!grouped[m.c]) grouped[m.c] = [];
@@ -88,29 +128,14 @@ async function executeSearch(query, selectedCol) {
     });
 
     const fetches = Object.entries(grouped).map(async ([colId, icons]) => {
-        if (!window.collectionData || !window.collectionData[colId]) {
-            try {
-                const scriptId = 'script-' + colId;
-                if (!document.getElementById(scriptId)) {
-                    await new Promise((resolve, reject) => {
-                        const s = document.createElement('script');
-                        s.id = scriptId;
-                        s.src = `data/${colId}.js`;
-                        s.onload = resolve;
-                        s.onerror = reject;
-                        document.body.appendChild(s);
-                    });
-                } else {
-                    let retries = 0;
-                    while ((!window.collectionData || !window.collectionData[colId]) && retries < 100) {
-                        await new Promise(r => setTimeout(r, 20));
-                        retries++;
-                    }
-                }
-            } catch(e) {}
+        if (!window.collectionData[colId]) {
+            const colData = await loadDataFile(`data/${colId}.js`, `collectionData['${colId}']`);
+            if (colData) {
+                window.collectionData[colId] = colData;
+            }
         }
         
-        let colData = window.collectionData ? window.collectionData[colId] : null;
+        let colData = window.collectionData[colId];
         if (!colData) return [];
         
         const results = [];
