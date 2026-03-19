@@ -1,5 +1,12 @@
 // The `collectionsList` variable is now globally available from collections-list.js 
 const collections = collectionsList;
+collections.forEach(c => {
+    // Format raw directory identifiers into display names
+    c.name = c.id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    // Strip trailing 'icons' from author name to prevent 'By Akar Icons in Akar Icons'
+    let auth = c.id.toLowerCase().replace(/-icons?$/, '') || c.id;
+    c.author = auth.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+});
 
 // DOM Elements
 const sidebarCollectionsList = document.getElementById('sidebar-collections-list');
@@ -413,7 +420,7 @@ function showPopover(icon) {
                 <div class="popover-header">
                     <div class="popover-title-area">
                         <h3>${icon.name}</h3>
-                        <p>By ${icon.author} in <a href="#">${icon.collection}</a></p>
+                        <p>${icon.author === icon.collection ? `From <a href="#">${icon.collection}</a>` : `By ${icon.author} in <a href="#">${icon.collection}</a>`}</p>
                     </div>
                     <div class="popover-actions-top">
                         <button title="Open in new tab">
