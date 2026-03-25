@@ -26,24 +26,38 @@ function initSelect() {
 }
 
 // Data Fetcher
-// Data files look like: collectionData['feather'] = [{...}];
-// We must find the '[' AFTER the '=' sign, not the first '[' in the subscript accessor.
+// Files are JS like: window.searchIndex = [{...}]; or collectionData['x'] = [{...}];
+// Instead of brittle string parsing, we execute the JS and extract the result.
 async function fetchSafeJSON(url) {
     try {
         const res = await fetch(url);
         if (!res.ok) { console.error("HTTP Error:", res.status, url); return null; }
         const text = await res.text();
-        // Find the assignment operator '=' first, then look for '[' after it
-        const eqIndex = text.indexOf('=');
-        if (eqIndex === -1) return null;
-        const arrayStart = text.indexOf('[', eqIndex);
-        const arrayEnd = text.lastIndexOf(']');
-        if (arrayStart !== -1 && arrayEnd > arrayStart) {
-            return JSON.parse(text.slice(arrayStart, arrayEnd + 1));
+        
+        // Create a sandbox to safely execute the JS and capture the assigned value
+        const sandbox = {};
+        const wrappedCode = `
+            var window = {};
+            var collectionData = {};
+            var searchIndex = null;
+            ${text}
+            return window.searchIndex || collectionData;
+        `;
+        const fn = new Function(wrappedCode);
+        const result = fn();
+        
+        // result is either the searchIndex array or the collectionData object
+        if (Array.isArray(result)) {
+            return result;
+        }
+        // collectionData is an object like { 'feather': [...] }
+        const keys = Object.keys(result);
+        if (keys.length > 0) {
+            return result[keys[0]];
         }
         return null;
     } catch(err) {
-        console.error("fetchSafeJSON Error:", err);
+        console.error("fetchSafeJSON Error:", err, url);
         return null;
     }
 }
