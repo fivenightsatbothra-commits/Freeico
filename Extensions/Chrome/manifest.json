@@ -5,7 +5,7 @@
   "description": "Access 300,000+ free SVG icons instantly from your browser's side panel.",
   "permissions": ["sidePanel"],
   "icons": {
-    "128": "../../Site/favicon.png"
+    "128": "icon128.png"
   },
   "background": {
     "service_worker": "background.js"

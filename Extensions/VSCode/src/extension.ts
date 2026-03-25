@@ -51,7 +51,7 @@ function getWebviewContent() {
     </style>
 </head>
 <body>
-    <iframe src="https://fivenightsatbothra-commits.github.io/Freeico/vscode.html" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+    <iframe src="https://fivenightsatbothra-commits.github.io/Freeico/index.html?minimal=true" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
     <script>
         const vscode = acquireVsCodeApi();
         

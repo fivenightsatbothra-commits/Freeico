@@ -1,7 +1,13 @@
+```json
 {
   "name": "freeico-framer-plugin",
   "private": true,
   "version": "1.0.0",
+  "framer": {
+    "id": "freeico-framer",
+    "name": "Freeico",
+    "main": "src/main.tsx"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",

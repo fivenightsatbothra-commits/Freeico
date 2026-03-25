@@ -3,49 +3,61 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = activate;
 exports.deactivate = deactivate;
 const vscode = require("vscode");
-const path = require("path");
-const fs = require("fs");
 function activate(context) {
-    let disposable = vscode.commands.registerCommand('freeico.openPanel', () => {
-        const panel = vscode.window.createWebviewPanel('freeicoSearch', 'Freeico: Icon Search', vscode.ViewColumn.Beside, {
-            enableScripts: true,
-            localResourceRoots: [
-                vscode.Uri.file(path.join(context.extensionPath, 'webview')),
-                vscode.Uri.file(path.join(context.extensionPath, 'data'))
-            ]
-        });
-        // Get URIs for local files to allow webview to load them
-        const webviewPath = path.join(context.extensionPath, 'webview');
-        const cssUri = panel.webview.asWebviewUri(vscode.Uri.file(path.join(webviewPath, 'ui.css')));
-        const jsUri = panel.webview.asWebviewUri(vscode.Uri.file(path.join(webviewPath, 'ui.js')));
-        const collectionsListUri = panel.webview.asWebviewUri(vscode.Uri.file(path.join(webviewPath, 'collections-list.js')));
-        // Base path for the data folder (we will pass this to the UI to build URLs)
-        const dataPathUri = panel.webview.asWebviewUri(vscode.Uri.file(path.join(context.extensionPath, 'data')));
-        let htmlContent = fs.readFileSync(path.join(webviewPath, 'ui.html'), 'utf-8');
-        // Inject URIs
-        htmlContent = htmlContent.replace('{{CSS_URI}}', cssUri.toString());
-        htmlContent = htmlContent.replace('{{JS_URI}}', jsUri.toString());
-        htmlContent = htmlContent.replace('{{COL_URI}}', collectionsListUri.toString());
-        htmlContent = htmlContent.replace('{{DATA_URI}}', dataPathUri.toString());
-        panel.webview.html = htmlContent;
-        // Handle messages from the webview
+    console.log('Congratulations, your extension "Freeico" is now active!');
+    let disposable = vscode.commands.registerCommand('freeico.open', () => {
+        const panel = vscode.window.createWebviewPanel('freeico', 'Freeico Icons', vscode.ViewColumn.Beside, { enableScripts: true, retainContextWhenHidden: true });
+        panel.webview.html = getWebviewContent();
+        // Handle messages sent from the iframe via our universal postMessage API!
         panel.webview.onDidReceiveMessage(message => {
-            switch (message.command) {
-                case 'insert-icon':
-                    const editor = vscode.window.activeTextEditor;
-                    if (editor) {
-                        editor.edit(editBuilder => {
-                            editBuilder.insert(editor.selection.active, message.svgCode);
-                        });
-                    }
-                    else {
-                        vscode.window.showErrorMessage('Please place your cursor in an active file to insert the icon.');
-                    }
-                    return;
+            if (message.type === 'insert-svg') {
+                const editor = vscode.window.activeTextEditor;
+                if (editor) {
+                    editor.edit(editBuilder => {
+                        editBuilder.insert(editor.selection.active, message.svg);
+                    });
+                    vscode.window.showInformationMessage(`⚡ Freeico: Inserted ${message.name || 'icon'}`);
+                }
+                else {
+                    // Fallback to clipboard if no active text editor is open
+                    vscode.env.clipboard.writeText(message.svg);
+                    vscode.window.showInformationMessage(`⚡ Freeico: Copied ${message.name || 'icon'} to clipboard!`);
+                }
             }
         }, undefined, context.subscriptions);
     });
     context.subscriptions.push(disposable);
+}
+function getWebviewContent() {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freeico Webview</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100vh; overflow: hidden; background: #fafafa; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+    <iframe src="https://fivenightsatbothra-commits.github.io/Freeico/index.html?minimal=true" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+    <script>
+        const vscode = acquireVsCodeApi();
+        
+        // Intercept cross-origin messages from the Freeico web app
+        window.addEventListener('message', event => {
+            if (event.origin !== "https://fivenightsatbothra-commits.github.io") return;
+            
+            const msg = event.data?.pluginMessage;
+            if (msg && msg.type === 'insert-svg') {
+                // Forward it natively to the VS Code backend
+                vscode.postMessage(msg);
+            }
+        });
+    </script>
+</body>
+</html>`;
 }
 function deactivate() { }
 //# sourceMappingURL=extension.js.map

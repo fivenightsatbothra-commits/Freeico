@@ -221,6 +221,31 @@ body {
     font-family: inherit;
 }
 
+.nav-btn.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Minimal Mode Overrides (For Chrome/Plugins) */
+body.minimal-mode .sidebar {
+    display: none !important;
+}
+
+body.minimal-mode .main-header {
+    display: none !important;
+}
+
+body.minimal-mode .main-content {
+    padding: 16px !important;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* Page Headers */
+.page-header {
+    background-color: #c93445;
+}
+
 .btn-primary {
     background-color: #de3c4f;
     color: white;

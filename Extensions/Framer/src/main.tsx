@@ -24,3 +24,14 @@ window.addEventListener("message", async (e) => {
         }
     }
 });
+
+function App() {
+    return (
+        <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+            <iframe 
+                src="https://fivenightsatbothra-commits.github.io/Freeico/index.html?minimal=true" 
+                style={{ width: '100%', height: '100%', border: 'none' }}
+            />
+        </div>
+    );
+}

@@ -4,6 +4,9 @@
   "description": "300,000+ open-source icons directly in your editor.",
   "version": "1.0.0",
   "publisher": "freeico",
+  "repository": { "type": "git", "url": "https://github.com/fivenightsatbothra-commits/Freeico" },
+  "license": "MIT",
+  "files": ["out/**/*"],
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -15,7 +18,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "freeico.openPanel",
+        "command": "freeico.open",
         "title": "Freeico: Find Icons"
       }
     ]

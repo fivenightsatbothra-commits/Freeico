@@ -411,10 +411,17 @@ function renderIconsGrid(collection, files) {
                 if (copyBtn) {
                     copyBtn.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        navigator.clipboard.writeText(item.querySelector('svg').outerHTML);
+                        const svgData = item.querySelector('svg').outerHTML;
+                        navigator.clipboard.writeText(svgData);
                         const span = copyBtn.innerHTML;
                         copyBtn.innerHTML = 'copied!';
                         setTimeout(() => copyBtn.innerHTML = span, 1000);
+                        
+                        try {
+                            if (window.parent !== window) {
+                                window.parent.postMessage({ pluginMessage: { type: 'insert-svg', svg: svgData, name: file.name } }, '*');
+                            }
+                        } catch(err) {}
                     });
                 }
                 
