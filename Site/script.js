@@ -502,8 +502,8 @@ function showPopover(icon) {
                     
                     <div class="color-input-wrapper">
                         <input type="text" id="popover-color-input" value="#000000">
-                        <input type="color" id="popover-color-picker" value="#000000" style="opacity:0; position:absolute; width:20px; height:20px; cursor:pointer;" title="Choose color">
-                        <div class="color-swatch" id="popover-color-swatch" style="background-color: #000000; pointer-events: none;"></div>
+                        <input type="color" id="popover-color-picker" value="#000000" style="opacity:0; position:absolute; width:0; height:0;" title="Choose color">
+                        <div class="color-swatch" id="popover-color-swatch" style="background-color: #000000; cursor: pointer;" title="Open Color Picker"></div>
                     </div>
                     
                     <button class="btn-icon" id="popover-reset-btn" title="Reset details">
@@ -589,6 +589,7 @@ function showPopover(icon) {
         if (/^#[0-9A-F]{6}$/i.test(e.target.value)) applyColor(e.target.value);
     });
     colorPicker.addEventListener('input', (e) => applyColor(e.target.value));
+    colorSwatch.addEventListener('click', () => colorPicker.click());
 
     // Reset details
     resetBtn.addEventListener('click', () => {
