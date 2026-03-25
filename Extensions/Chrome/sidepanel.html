@@ -20,12 +20,5 @@
 <body>
   <!-- Embedding the main web app in its Chrome Sidepanel configuration -->
   <iframe src="https://fivenightsatbothra-commits.github.io/Freeico/index.html?minimal=true"></iframe>
-  
-  <script>
-    // Chrome Extension doesn't strictly need postMessage to inject SVG because 
-    // users can just click "Copy SVG" inside the iframe and use their OS clipboard.
-    // However, if we wanted to auto-download, we could trap it here, although 
-    // the web app's `downloadFile` handles native file saving perfectly fine even inside Chrome sidepanels!
-  </script>
 </body>
 </html>

@@ -178,8 +178,8 @@ function renderSidebarCollections() {
 
     const selectDropdown = document.getElementById('plugin-category-select');
     if (selectDropdown) {
-        selectDropdown.innerHTML = \`<option value="">All Collections</option>\` + 
-            sortedCollections.map(c => \`<option value="\${c.id}">\${c.name}</option>\`).join('');
+        selectDropdown.innerHTML = `<option value="">All Collections</option>` + 
+            sortedCollections.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
         
         if (!selectDropdown.hasAttribute('data-bound')) {
             selectDropdown.addEventListener('change', (e) => {
