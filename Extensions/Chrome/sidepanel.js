@@ -26,17 +26,22 @@ function initSelect() {
 }
 
 // Data Fetcher
+// Data files look like: collectionData['feather'] = [{...}];
+// We must find the '[' AFTER the '=' sign, not the first '[' in the subscript accessor.
 async function fetchSafeJSON(url) {
     try {
         const res = await fetch(url);
-        if (!res.ok) return null;
+        if (!res.ok) { console.error("HTTP Error:", res.status, url); return null; }
         const text = await res.text();
-        const firstBracket = text.indexOf('[');
-        const lastBracket = text.lastIndexOf(']');
-        if (firstBracket !== -1 && lastBracket !== -1) {
-            return JSON.parse(text.slice(firstBracket, lastBracket + 1));
+        // Find the assignment operator '=' first, then look for '[' after it
+        const eqIndex = text.indexOf('=');
+        if (eqIndex === -1) return null;
+        const arrayStart = text.indexOf('[', eqIndex);
+        const arrayEnd = text.lastIndexOf(']');
+        if (arrayStart !== -1 && arrayEnd > arrayStart) {
+            return JSON.parse(text.slice(arrayStart, arrayEnd + 1));
         }
-        return null; // fallback if parsing malformed script wrapper
+        return null;
     } catch(err) {
         console.error("fetchSafeJSON Error:", err);
         return null;
