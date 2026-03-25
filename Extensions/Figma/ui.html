@@ -8,7 +8,10 @@
 </head>
 <body>
   <!-- Natively embed the Freeico web app for infinite scalability -->
-  <iframe id="app-frame" src="https://fivenightsatbothra-commits.github.io/Freeico/index.html?minimal=true"></iframe>
+  <iframe id="app-frame" src="about:blank"></iframe>
+  <script>
+    document.getElementById('app-frame').src = "https://fivenightsatbothra-commits.github.io/Freeico/index.html?minimal=true&v=" + Date.now();
+  </script>
   <script>
     // Listen for cross-origin messages from the Freeico iframe
     window.addEventListener("message", (event) => {

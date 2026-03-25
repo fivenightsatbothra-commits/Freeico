@@ -18,7 +18,8 @@
   </style>
 </head>
 <body>
-  <!-- Embedding the main web app in its Chrome Sidepanel configuration -->
-  <iframe src="https://fivenightsatbothra-commits.github.io/Freeico/index.html?minimal=true"></iframe>
+  <!-- Embedding the main web app with cache bypassing -->
+  <iframe id="app-frame" src="about:blank"></iframe>
+  <script src="sidepanel.js"></script>
 </body>
 </html>
