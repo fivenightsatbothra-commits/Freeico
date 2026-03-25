@@ -5,7 +5,7 @@
   "description": "Access 300,000+ free SVG icons instantly from your browser's side panel.",
   "permissions": ["sidePanel"],
   "host_permissions": [
-    "https://fivenightsatbothra-commits.github.io/"
+    "https://fivenightsatbothra-commits.github.io/*"
   ],
   "icons": {
     "128": "icon128.png"
