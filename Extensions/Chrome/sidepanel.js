@@ -25,29 +25,44 @@ function initSelect() {
 async function loadDataFile(path, variableName) {
     try {
         const response = await fetch(path);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         let text = await response.text();
         
-        // Extract the JSON part after "window.XXXX = "
-        // This handles window.searchIndex = [...] and window.collectionData['col'] = [...]
-        const regex = new RegExp(`window\\.${variableName.replace(/\[.*\]/, '')}(?:\\[['"].*?['"]\\])?\\s*=\\s*([\\s\\S]*);?`);
-        const match = text.match(regex);
+        // 1. Find the occurrence of the specific variable name to avoid catching prefixing code
+        // We look for just the basename/property like "collectionData['covid']" or "searchIndex"
+        let varPos = text.indexOf(variableName.replace(/\[.*\]/, ''));
+        if (varPos === -1) varPos = 0; // Fallback to start of file
         
-        if (match && match[1]) {
-            let jsonStr = match[1].trim();
-            if (jsonStr.endsWith(';')) jsonStr = jsonStr.slice(0, -1);
-            return JSON.parse(jsonStr);
+        // 2. Find the assignment operator '=' after the variable name
+        const eqIndex = text.indexOf('=', varPos);
+        if (eqIndex === -1) {
+            console.error(`Could not find assignment '=' in ${path}`);
+            return null;
         }
         
-        // Fallback for searchIndex which might not have quotes in the variableName check
-        if (variableName === 'searchIndex') {
-             const fallbackMatch = text.match(/window\.searchIndex\s*=\s*([\s\S]*);?/);
-             if (fallbackMatch && fallbackMatch[1]) {
-                 let jsonStr = fallbackMatch[1].trim();
-                 if (jsonStr.endsWith(';')) jsonStr = jsonStr.slice(0, -1);
-                 return JSON.parse(jsonStr);
-             }
+        // 3. Find the first '[' or '{' after the '='
+        let jsonStart = text.indexOf('[', eqIndex);
+        if (jsonStart === -1 || (text.indexOf('{', eqIndex) !== -1 && text.indexOf('{', eqIndex) < jsonStart)) {
+            jsonStart = text.indexOf('{', eqIndex);
         }
-
+        
+        // 4. Find the LAST ']' or '}' in the file (most data files consist of one big array)
+        let jsonEnd = text.lastIndexOf(']');
+        if (jsonEnd === -1 || (text.lastIndexOf('}') !== -1 && text.lastIndexOf('}') > jsonEnd)) {
+            jsonEnd = text.lastIndexOf('}');
+        }
+        
+        if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+            let jsonStr = text.substring(jsonStart, jsonEnd + 1);
+            try {
+                return JSON.parse(jsonStr);
+            } catch (parseError) {
+                console.error(`JSON Parse failed for ${path}:`, parseError, "Snippet:", jsonStr.substring(0, 100));
+                return null;
+            }
+        }
+        
+        console.error(`Could not find JSON bounds in ${path}`);
         return null;
     } catch (e) {
         console.error(`Error loading data file ${path}:`, e);
@@ -62,7 +77,7 @@ async function loadIndex(callback) {
         return;
     }
     
-    loadingState.textContent = 'Loading index (this might take a second)...';
+    loadingState.textContent = 'Preparing icons (this may take a moment)...';
     
     const data = await loadDataFile('data/search-index.js', 'searchIndex');
     if (data) {
@@ -70,7 +85,7 @@ async function loadIndex(callback) {
         loadingState.style.display = 'none';
         callback();
     } else {
-        loadingState.textContent = 'Failed to load icon index.';
+        loadingState.textContent = 'Failed to load icon index. Please try reloading the side panel.';
     }
 }
 
@@ -78,6 +93,8 @@ async function loadIndex(callback) {
 let debounce = null;
 function handleSearch() {
     clearTimeout(debounce);
+    if (!searchIndexData) return; // Wait for index
+
     debounce = setTimeout(() => {
         const query = searchInput.value.toLowerCase().trim();
         const selectedCol = collectionSelect.value;
@@ -140,6 +157,7 @@ async function copyAsPng(svgElement) {
 }
 
 async function executeSearch(query, selectedCol) {
+    if (!searchIndexData) return;
     let matches = [];
     
     // 1. Filter the index
@@ -149,8 +167,7 @@ async function executeSearch(query, selectedCol) {
         matches = searchIndexData.filter(i => i.n.includes(query) || i.c.includes(query));
         // Cap large global sets to keep rendering snappy
         if (matches.length > 200) {
-            const step = matches.length / 200;
-            matches = Array.from({length: 200}, (_, i) => matches[Math.floor(i * step)]);
+            matches = matches.slice(0, 200);
         }
     }
 
@@ -229,7 +246,4 @@ collectionSelect.addEventListener('change', handleSearch);
 initSelect();
 loadIndex(() => {
     loadingState.textContent = 'Search to explore 300,000+ icons';
-    // optionally prefill a generic search like "user" just to show the grid
-    searchInput.value = 'fire'; 
-    handleSearch();
 });
