@@ -1,4 +1,4 @@
-const BASE_DATA_URL = "https://fivenightsatbothra-commits.github.io/Freeico/data";
+const BASE_DATA_URL = "https://fivenightsatbothra-commits.github.io/Freeico/Data";
 
 const searchInput = document.getElementById("searchInput");
 const categorySelect = document.getElementById("categorySelect");
