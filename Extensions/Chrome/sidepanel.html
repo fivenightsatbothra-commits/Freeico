@@ -1,25 +1,180 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #fafafa;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Freeico Native Chrome Sidepanel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 12px 14px;
+            background: #ffffff;
+            color: #18181b;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header */
+        .plugin-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: -0.3px;
+        }
+        .plugin-header img {
+            border-radius: 50%;
+            background: #e11d48;
+            padding: 3px;
+        }
+
+        /* Search */
+        .search-container {
+            position: relative;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            width: 14px;
+            height: 14px;
+            color: #71717a;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 8px 10px 8px 30px;
+            border-radius: 8px;
+            border: none;
+            background: #f4f4f5;
+            box-shadow: inset 0 0 0 1px #e4e4e7;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            color: #18181b;
+            transition: box-shadow 0.15s;
+        }
+        .search-container input:focus {
+            box-shadow: inset 0 0 0 2px #e11d48;
+        }
+
+        /* Dropdown Options */
+        .plugin-category-select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #e4e4e7;
+            background: #fafafa;
+            margin-bottom: 16px;
+            font-family: inherit;
+            font-size: 13px;
+            color: #18181b;
+            outline: none;
+            cursor: pointer;
+        }
+        .plugin-category-select:focus {
+            border-color: #a1a1aa;
+        }
+
+        /* Grid */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 4px; /* for scrollbar */
+        }
+        .icon-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        .icon-grid::-webkit-scrollbar-thumb {
+            background: #e4e4e7;
+            border-radius: 4px;
+        }
+        .icon-card {
+            aspect-ratio: 1/1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #f1f1f3;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.1s ease;
+        }
+        .icon-card:hover {
+            background: #f4f4f5;
+        }
+        .icon-card:active {
+            transform: scale(0.95);
+        }
+        .icon-card svg {
+            max-width: 24px;
+            max-height: 24px;
+            color: #000;
+        }
+
+        /* Utilities */
+        .loadingState {
+            font-size: 13px;
+            color: #71717a;
+            text-align: center;
+            margin-top: 20px;
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #18181b;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
 </head>
 <body>
-  <!-- Embedding the main web app with cache bypassing -->
-  <iframe id="app-frame" src="about:blank"></iframe>
-  <script src="sidepanel.js"></script>
+
+    <div class="plugin-header">
+        <img src="logo.png" width="20" height="20" alt="Freeico Logo">
+        <span>freeico</span>
+    </div>
+
+    <div class="search-container">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" placeholder="Search icons..." autocomplete="off">
+    </div>
+
+    <select id="categorySelect" class="plugin-category-select">
+        <option value="all">All Collections</option>
+    </select>
+
+    <div id="iconGrid" class="icon-grid">
+        <div id="loadingIndicator" class="loadingState">Loading library...</div>
+    </div>
+
+    <div id="toast" class="toast">Copied to Clipboard!</div>
+
+    <script src="sidepanel.js"></script>
 </body>
 </html>
