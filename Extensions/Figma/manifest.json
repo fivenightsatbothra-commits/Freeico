@@ -1,12 +1,11 @@
 {
   "name": "Freeico - 300,000+ Icons",
-  "id": "1363714545184241", 
+  "id": "1234567890",
   "api": "1.0.0",
   "main": "code.js",
   "ui": "ui.html",
   "editorType": ["figma", "figjam"],
   "networkAccess": {
-    "allowedDomains": ["none"],
-    "reasoning": "Local offline icon dictionary."
+    "allowedDomains": ["none"]
   }
 }

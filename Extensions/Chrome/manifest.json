@@ -1,16 +1,19 @@
 {
   "manifest_version": 3,
-  "name": "freeico",
-  "version": "1.0",
-  "description": "Lightning fast open-source icon search side panel.",
+  "name": "Freeico - 300,000+ Free SVG Icons",
+  "version": "1.0.0",
+  "description": "Access 300,000+ free SVG icons instantly from your browser's side panel.",
+  "permissions": ["sidePanel"],
   "icons": {
-    "128": "icon128.png"
+    "128": "../../Site/favicon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Open Freeico"
   },
   "side_panel": {
     "default_path": "sidepanel.html"
-  },
-  "permissions": ["sidePanel"],
-  "background": {
-    "service_worker": "background.js"
   }
 }

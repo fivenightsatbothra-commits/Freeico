@@ -1,2 +1,2 @@
-// Enable the side panel to open on extension icon click
+// Allows users to open the side panel by clicking on the action toolbar icon
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch((error) => console.error(error));

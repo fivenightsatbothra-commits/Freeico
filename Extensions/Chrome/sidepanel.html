@@ -1,42 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>freeico Side Panel</title>
-    <link rel="stylesheet" href="sidepanel.css">
-    <script src="collections-list.js"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #fafafa;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo-area">
-            <img src="icon128.png" alt="freeico logo" width="24" height="24">
-            <h2>freeico</h2>
-        </div>
-    </div>
-    
-    <div class="search-container">
-        <div class="input-wrapper">
-            <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" stroke="#666" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="search-input" placeholder="Search..." autocomplete="off" spellcheck="false">
-        </div>
-        <div class="select-wrapper">
-            <select id="collection-select">
-                <option value="all">All Collections</option>
-                <!-- Dynamically populated -->
-            </select>
-        </div>
-    </div>
-
-    <div class="scroll-area">
-        <div class="grid" id="icon-grid">
-            <!-- Icons injected here -->
-        </div>
-        <div id="loading-state" class="loading-state">Loading index...</div>
-    </div>
-
-    <div id="toast" class="toast">Copied to clipboard!</div>
-
-    <script src="sidepanel.js"></script>
+  <!-- Embedding the main web app in its Chrome Sidepanel configuration -->
+  <iframe src="https://fivenightsatbothra-commits.github.io/Freeico/chrome.html"></iframe>
+  
+  <script>
+    // Chrome Extension doesn't strictly need postMessage to inject SVG because 
+    // users can just click "Copy SVG" inside the iframe and use their OS clipboard.
+    // However, if we wanted to auto-download, we could trap it here, although 
+    // the web app's `downloadFile` handles native file saving perfectly fine even inside Chrome sidepanels!
+  </script>
 </body>
 </html>
