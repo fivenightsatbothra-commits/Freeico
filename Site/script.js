@@ -44,6 +44,11 @@ const navHome = document.getElementById('nav-home');
 const navSearch = document.getElementById('nav-search');
 const navBookmarks = document.getElementById('nav-bookmarks');
 const popoverContainer = document.getElementById('icon-popover-container');
+const navFigma = document.getElementById('nav-figma');
+const navVSCode = document.getElementById('nav-vscode');
+const navFramer = document.getElementById('nav-framer');
+const navWordPress = document.getElementById('nav-wordpress');
+const navChrome = document.getElementById('nav-chrome');
 
 // State
 let selectedIcon = null;
@@ -101,11 +106,13 @@ function init() {
         });
     }
 
+
+
     if (mainSearch) {
         mainSearch.addEventListener('focus', () => {
             if (!searchIndexData) {
                 const tempScript = document.createElement('script');
-                tempScript.src = 'data/search-index.js';
+                tempScript.src = 'https://cdn.jsdelivr.net/gh/fivenightsatbothra-commits/Freeico@main/Data/search-index.js';
                 tempScript.onload = () => { searchIndexData = window.searchIndex; };
                 document.body.appendChild(tempScript);
             }
@@ -178,6 +185,8 @@ function renderSidebarCollections() {
         });
     });
 }
+
+
 
 function renderHomeView() {
     // Reset top section to default home view
@@ -318,7 +327,7 @@ function renderCollectionView(collection) {
         if (!document.getElementById(scriptId)) {
             const script = document.createElement('script');
             script.id = scriptId;
-            script.src = `data/${collection.id}.js`;
+            script.src = `https://cdn.jsdelivr.net/gh/fivenightsatbothra-commits/Freeico@main/Data/${collection.id}.js`;
             script.onerror = () => {
                 contentArea.innerHTML = '<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: red;">Failed to load icons for this collection.</div>';
             };
@@ -732,10 +741,7 @@ function showPopover(icon) {
 
     // Copy CDN link
     document.getElementById('popover-copy-cdn').addEventListener('click', (e) => {
-        const baseUrl = window.location.href;
-        const size = sizeSelect.value;
-        const color = encodeURIComponent(colorInput.value);
-        const link = new URL(`../svg-Collections/${icon.collection}/${icon.name}.svg?size=${size}&color=${color}`, baseUrl).href;
+        const link = `https://cdn.jsdelivr.net/gh/fivenightsatbothra-commits/Freeico@main/svg-Collections/${icon.collection}/${icon.name}.svg`;
         navigator.clipboard.writeText(link);
         updateBtnText(e.currentTarget, 'Copied!');
     });
@@ -800,7 +806,7 @@ async function renderSearchResults(query) {
                     await new Promise((resolve, reject) => {
                         const script = document.createElement('script');
                         script.id = scriptId;
-                        script.src = `data/${colId}.js`;
+                        script.src = `https://cdn.jsdelivr.net/gh/fivenightsatbothra-commits/Freeico@main/Data/${colId}.js`;
                         script.onload = resolve;
                         script.onerror = reject;
                         document.body.appendChild(script);

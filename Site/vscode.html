@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>freeico for VS Code</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .split-layout {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+        .split-left { flex: 1.2; }
+        .split-right { flex: 0.8; padding-left: 20px; }
+        .tags-row { display: flex; gap: 12px; align-items: center; }
+        .hero-img-wrap { width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid var(--border-color); }
+        @media(max-width: 800px) {
+            .split-layout { flex-direction: column; align-items: flex-start; }
+            .split-right { padding-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <div class="logo-icon"><img src="logo.png" alt="freeico logo" width="24" height="24"></div>
+                <span>freeico</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Home</a>
+                <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Search</a>
+                <a href="figma.html" class="nav-item"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Figma plugin</a>
+                <a href="vscode.html" class="nav-item active"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg> VS Code extension</a>
+                <a href="framer.html" class="nav-item"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 17 22 12"></polyline></svg> Framer plugin</a>
+                <a href="wordpress.html" class="nav-item"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> WordPress Plugin</a>
+                <a href="chrome.html" class="nav-item"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><line x1="21.17" y1="8" x2="12" y2="8"></line><line x1="3.95" y1="6.06" x2="8.54" y2="14"></line><line x1="10.88" y1="21.94" x2="15.46" y2="14"></line></svg> Chrome extension</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div style="max-width: 1100px; margin: 0 auto; padding-top: 40px;">
+                <!-- Split Header Layout -->
+                <div class="split-layout">
+                    <div class="split-left">
+                        <h1 style="font-size: 3.2rem; font-weight: 800; line-height: 1.15; margin-bottom: 24px; color: #111827; letter-spacing: -0.02em;">Browse 300,000 open<br>source icons in Code</h1>
+                        <div class="tags-row">
+                            <span style="background: #ffe4e6; color: #be123c; padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                1,580+ installs
+                            </span>
+                            <span style="background: #f3e8ff; color: #7e22ce; padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                5 millions icon search
+                            </span>
+                        </div>
+                    </div>
+                    <div class="split-right">
+                        <p style="font-size: 1.15rem; color: #4b5563; line-height: 1.5; margin-bottom: 20px;">Instantly search, preview, and copy open-source icons inside VS Code.</p>
+                        <button class="btn" style="background: #df3b57; color: white; padding: 14px 28px; font-size: 1.05rem; font-weight: 600; border-radius: 999px; box-shadow: 0 4px 14px rgba(223, 59, 87, 0.4); border:none; cursor:pointer;">Get VS Code Extension Access</button>
+                    </div>
+                </div>
+
+                <!-- Massive Hero Image -->
+                <div class="hero-img-wrap fade-in-up">
+                    <svg viewBox="0 0 1000 600" width="100%" height="auto" style="display: block; background: #1e1e1e;">
+                        <!-- MacOS window dots -->
+                        <circle cx="30" cy="30" r="6" fill="#ff5f56" />
+                        <circle cx="50" cy="30" r="6" fill="#ffbd2e" />
+                        <circle cx="70" cy="30" r="6" fill="#27c93f" />
+                        
+                        <!-- VS Code rough layout elements -->
+                        <!-- Sidebar -->
+                        <rect x="0" y="60" width="250" height="540" fill="#252526" />
+                        <text x="20" y="90" fill="#cccccc" font-family="sans-serif" font-size="12" font-weight="bold">EXTENSIONS: MARKETPLACE</text>
+                        
+                        <rect x="20" y="110" width="210" height="26" fill="#3c3c3c" rx="4" />
+                        <text x="30" y="128" fill="#cccccc" font-family="sans-serif" font-size="12">freeico</text>
+                        
+                        <!-- Extension list item -->
+                        <rect x="10" y="150" width="230" height="64" fill="#37373d" />
+                        <!-- icon -->
+                        <rect x="20" y="162" width="40" height="40" fill="#df3b57" rx="8" />
+                        <circle cx="40" cy="182" r="12" fill="none" stroke="white" stroke-width="2" />
+                        <text x="70" y="176" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold">freeico</text>
+                        <text x="70" y="194" fill="#cccccc" font-family="sans-serif" font-size="11">A plugin to browse 300,000 op...</text>
+                        
+                        <!-- Main Content Area -->
+                        <rect x="250" y="60" width="750" height="540" fill="#1e1e1e" />
+                        
+                        <!-- Large Extension details -->
+                        <rect x="350" y="150" width="100" height="100" fill="#df3b57" rx="20" />
+                        <circle cx="400" cy="200" r="30" fill="none" stroke="white" stroke-width="4" />
+                        
+                        <text x="480" y="180" fill="#ffffff" font-family="sans-serif" font-size="32" font-weight="bold">freeico</text>
+                        <text x="480" y="210" fill="#cccccc" font-family="sans-serif" font-size="14">Freeico Team   |   1,580 installs   |   ★★★★★</text>
+                        <text x="480" y="240" fill="#cccccc" font-family="sans-serif" font-size="14">A plugin to browse 300,000 open source svg icons directly in your workspace.</text>
+                        
+                        <rect x="480" y="260" width="80" height="30" fill="#007acc" rx="2" />
+                        <text x="495" y="280" fill="#ffffff" font-family="sans-serif" font-size="13">Disable ^</text>
+                        
+                        <rect x="570" y="260" width="90" height="30" fill="#007acc" rx="2" />
+                        <text x="585" y="280" fill="#ffffff" font-family="sans-serif" font-size="13">Uninstall ^</text>
+                        
+                        <text x="480" y="310" fill="#cccccc" font-family="sans-serif" font-size="12">This extension is enabled globally.</text>
+                    </svg>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

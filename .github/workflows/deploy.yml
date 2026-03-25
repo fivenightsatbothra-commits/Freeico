@@ -34,8 +34,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Define the specific directory to deploy (Site_v2)
-          path: './Site_v2'
+          # Define the specific directory to deploy (Site)
+          path: './Site'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

@@ -1,0 +1,33 @@
+{
+  "name": "freeico-vscode",
+  "displayName": "Freeico",
+  "description": "300,000+ open-source icons directly in your editor.",
+  "version": "1.0.0",
+  "publisher": "freeico",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "freeico.openPanel",
+        "title": "Freeico: Find Icons"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.1.3"
+  }
+}
